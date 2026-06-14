@@ -1,0 +1,61 @@
+/* ─── 盐湖记 扩展样式 ─────────────────────────────────────────── */
+
+.field-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+.map-hotspot {
+  position: absolute; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.3s, transform 0.2s;
+  cursor: pointer; z-index: 5;
+  border: 2px solid rgba(255,255,255,0.5);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.map-hotspot:hover { transform: scale(1.2); z-index: 10; }
+
+.category-tag { transition: all 0.2s; display: inline-block; }
+.category-tag:hover { background: var(--accent-soft); border-color: var(--accent) !important; }
+.category-tag.active { background: var(--accent); color: #fff; border-color: var(--accent) !important; }
+
+.task-card {
+  background: var(--surface); border-radius: 12px; padding: 20px;
+  border: 1px solid var(--border); transition: all 0.2s;
+  display: flex; gap: 14px;
+}
+.task-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 4px 20px color-mix(in oklch, var(--fg) 6%, transparent); }
+.task-icon { font-size: 28px; width: 48px; height: 48px; display: grid; place-items: center; flex-shrink: 0; }
+.task-body { flex: 1; min-width: 0; }
+
+.leader-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.leader-item:last-child { border-bottom: none; }
+.leader-rank { width: 28px; text-align: center; font-weight: 600; font-size: 14px; }
+.leader-name { flex: 1; font-size: 14px; }
+.leader-count { font-size: 13px; color: var(--muted); }
+
+.avatar-option { transition: border 0.1s; }
+.avatar-option:hover { background: var(--accent-soft); }
+
+.species-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gap-md);
+}
+.species-card {
+  background: var(--surface); border-radius: 12px; border: 1px solid var(--border);
+  overflow: hidden; transition: all 0.2s;
+}
+.species-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+.species-emoji { background: var(--accent-soft); }
+.species-desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+@media (min-width: 768px) {
+  .species-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .species-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 480px) {
+  .species-grid { grid-template-columns: repeat(2, 1fr); gap: var(--gap-sm); }
+  .task-card { flex-direction: column; text-align: center; }
+  .task-icon { margin: 0 auto; }
+}

@@ -1,0 +1,1218 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>盐湖记 · 运城盐湖生态观测</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#E8927C">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="盐湖记">
+  <style>
+    /* ─── tokens — Warm Soft + 盐湖生态色板 ─────────────────────────── */
+    :root {
+      --bg:             #FBF7F2;   /* 中条山石灰白底调，暖纸质感 */
+      --surface:        #FFFFFF;
+      --fg:             #2A231D;   /* 暖棕黑，避免纯黑 */
+      --muted:          #7A6E64;   /* 暖灰褐 */
+      --border:         #E8E0D5;   /* 暖浅灰 */
+      --accent:         #E8927C;   /* 盐湖晨曦橙 */
+      --accent-red:     #C75B5B;   /* 盐藻红 */
+      --accent-green:   #5B8C5A;   /* 湿地绿 */
+      --accent-blue:    #4A90A4;   /* 湖水蓝 */
+      --accent-gold:    #C4954A;   /* 徽章金 */
+      --success:        #5B8C5A;
+      --warn:           #D4952A;
+      --danger:         #C75B5B;
+      --accent-on:      var(--accent-on)fff;   /* text on accent / dark bg */
+      --rank-silver:    #c0c0c0;
+      --rank-bronze:    #c8a076;
+
+      /* warm tints for species / observation card backgrounds */
+      --tint-warm-sand:  #e8d5c4;
+      --tint-warm-earth: #d4a98a;
+      --tint-green-pale: #c4d4c4;
+      --tint-green-moss: #8aaa8a;
+      --tint-blue-pale:  #c4d0d8;
+      --tint-blue-gray:  #8aa4b4;
+      --tint-rose-pale:  #d8c8c8;
+      --tint-rose-dust:  #b88a8a;
+      --tint-amber:      #f0d5c0;
+      --tint-amber-deep: #d4956a;
+      --tint-mint:       #c8d8c0;
+      --tint-mint-deep:  #8aaa7a;
+      --tint-lavender:   #d0c8e0;
+      --tint-lavender-deep: #9a8ac0;
+      --tint-taupe:      #d8d0c0;
+      --tint-taupe-deep: #b8a880;
+      --tint-sky:        #c8d4e0;
+      --tint-sky-deep:   #7a9ab8;
+
+      /* derived */
+      --accent-soft:    color-mix(in oklch, var(--accent) 16%, transparent);
+      --green-soft:     color-mix(in oklch, var(--accent-green) 14%, transparent);
+      --blue-soft:      color-mix(in oklch, var(--accent-blue) 14%, transparent);
+      --red-soft:       color-mix(in oklch, var(--accent-red) 14%, transparent);
+      --fg-soft:        color-mix(in oklch, var(--fg) 5%, transparent);
+
+      /* Chinese-optimized font stacks */
+      --font-display: 'Noto Serif SC', 'Source Han Serif SC', '思源宋体', 'Songti SC', Georgia, serif;
+      --font-body:    'Noto Sans SC', 'Source Han Sans SC', '思源黑体', 'PingFang SC', 'Hiragino Sans GB', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --font-mono:    ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+      /* scale — fluid for mobile-first */
+      --fs-h1:   clamp(32px, 6vw, 56px);
+      --fs-h2:   clamp(24px, 4vw, 40px);
+      --fs-h3:   18px;
+      --fs-lead: 16px;
+      --fs-body: 15px;
+      --fs-sm:   13px;
+      --fs-xs:   12px;
+
+      /* spacing */
+      --gap-xs:  6px;
+      --gap-sm:  10px;
+      --gap-md:  16px;
+      --gap-lg:  24px;
+      --gap-xl:  40px;
+      --gap-2xl: 64px;
+      --container: 1120px;
+      --gutter: 20px;
+
+      --radius-sm: 8px;
+      --radius:    12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+
+      /* motion */
+      --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+      --fast: 0.15s;
+      --base: 0.28s;
+    }
+
+    /* ─── reset & base ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--fs-body);
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      /* subtle paper texture via CSS */
+      background-image:
+        radial-gradient(ellipse at 20% 50%, color-mix(in oklch, var(--accent) 4%, transparent) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, color-mix(in oklch, var(--accent-green) 3%, transparent) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; }
+    p { text-wrap: pretty; margin: 0; }
+    h1, h2, h3, h4 { text-wrap: balance; margin: 0; }
+
+    /* ─── layout primitives ─────────────────────────────────────────── */
+    .container {
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
+    }
+    .section { padding-block: clamp(48px, 8vw, 88px); }
+    .section + .section { border-top: 1px solid var(--border); }
+    .stack { display: flex; flex-direction: column; gap: var(--gap-md); }
+    .row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-md); }
+
+    /* ─── type ──────────────────────────────────────────────────────── */
+    .h1, h1 { font-family: var(--font-display); font-size: var(--fs-h1); line-height: 1.15; letter-spacing: 0; margin: 0; font-weight: 700; }
+    .h2, h2 { font-family: var(--font-display); font-size: var(--fs-h2); line-height: 1.2; letter-spacing: 0; margin: 0; font-weight: 600; }
+    .h3, h3 { font-size: var(--fs-h3); font-weight: 600; line-height: 1.35; margin: 0; }
+    .lead { font-size: var(--fs-lead); line-height: 1.6; color: var(--muted); max-width: 58ch; margin: 0; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0;
+    }
+    .meta { font-size: var(--fs-sm); color: var(--muted); }
+    .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+    /* ─── top nav ───────────────────────────────────────────────────── */
+    .topnav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0;
+      transition: background var(--base) var(--ease), backdrop-filter var(--base) var(--ease), box-shadow var(--base) var(--ease);
+    }
+    .topnav.scrolled {
+      background: color-mix(in oklch, var(--bg) 88%, transparent);
+      backdrop-filter: blur(16px) saturate(1.2);
+      box-shadow: 0 1px 0 var(--border);
+    }
+    .topnav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-block: 12px;
+      gap: var(--gap-md);
+    }
+    .topnav .logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--fg);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .topnav .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: var(--radius-sm);
+      display: grid; place-items: center;
+      color: var(--accent-on); font-size: 16px;
+    }
+    .topnav-actions { display: flex; align-items: center; gap: var(--gap-sm); }
+    .topnav .btn-icon {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      color: var(--muted);
+      transition: background var(--fast) var(--ease), color var(--fast) var(--ease);
+    }
+    .topnav .btn-icon:hover, .topnav .btn-icon:active { background: var(--fg-soft); color: var(--fg); }
+    .topnav .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-red));
+      display: grid; place-items: center;
+      color: var(--accent-on); font-size: 14px; font-weight: 600;
+    }
+    .topnav .btn-icon svg { width: 20px; height: 20px; }
+
+    /* ─── bottom nav (mobile) ───────────────────────────────────────── */
+    .bottomnav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: color-mix(in oklch, var(--bg) 94%, var(--surface));
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around;
+      padding: 6px 0 max(6px, env(safe-area-inset-bottom));
+    }
+    .bottomnav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      padding: 4px 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+      transition: color var(--fast) var(--ease);
+      min-width: 48px;
+    }
+    .bottomnav-item.active { color: var(--accent); }
+    .bottomnav-item svg { width: 22px; height: 22px; }
+    .bottomnav-item.record-btn {
+      position: relative; top: -14px;
+    }
+    .bottomnav-item.record-btn .record-circle {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: grid; place-items: center;
+      color: var(--accent-on);
+      box-shadow: 0 4px 16px color-mix(in oklch, var(--accent) 40%, transparent);
+    }
+    .bottomnav-item.record-btn .record-circle svg { width: 24px; height: 24px; }
+
+    /* ─── buttons ───────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 22px;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: transform 0.08s var(--ease), background var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+      border: 0;
+      min-height: 44px;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-on);
+      box-shadow: 0 2px 12px color-mix(in oklch, var(--accent) 30%, transparent);
+    }
+    .btn-primary:hover { background: color-mix(in oklch, var(--accent) 90%, black); box-shadow: 0 4px 20px color-mix(in oklch, var(--accent) 40%, transparent); }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--fg);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-ghost { color: var(--muted); background: transparent; padding-inline: 8px; }
+    .btn-ghost:hover { color: var(--accent); }
+
+    /* ─── pulse CTA animation ───────────────────────────────────────── */
+    .btn-pulse {
+      animation: pulse-ring 2.4s ease-out infinite;
+    }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 50%, transparent); }
+      70%  { box-shadow: 0 0 0 16px color-mix(in oklch, var(--accent) 0%, transparent); }
+      100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 0%, transparent); }
+    }
+
+    /* ─── hero ──────────────────────────────────────────────────────── */
+    .hero {
+      padding-block-start: clamp(96px, 16vw, 160px);
+      padding-block-end: clamp(48px, 8vw, 80px);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        linear-gradient(180deg, color-mix(in oklch, var(--accent-green) 8%, transparent) 0%, transparent 60%),
+        linear-gradient(135deg, color-mix(in oklch, var(--accent) 12%, transparent) 0%, transparent 50%),
+        var(--bg);
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 40%;
+      background: linear-gradient(0deg, var(--bg) 0%, transparent 100%);
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero h1 { margin-bottom: var(--gap-md); max-width: 18ch; }
+    .hero .lead { margin-bottom: var(--gap-lg); }
+
+    /* dashboard cards in hero */
+    .dash-row {
+      display: flex; gap: var(--gap-md);
+      margin-bottom: var(--gap-lg);
+      flex-wrap: wrap;
+    }
+    .dash-card {
+      background: color-mix(in oklch, var(--surface) 92%, transparent);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      min-width: 140px;
+      flex: 1;
+    }
+    .dash-card .dash-num {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1.1;
+    }
+    .dash-card .dash-label { font-size: var(--fs-sm); color: var(--muted); margin-top: 4px; }
+    .dash-card .dash-sub { font-size: var(--fs-xs); color: var(--accent-green); margin-top: 2px; font-weight: 500; }
+
+    /* ─── observation card carousel ─────────────────────────────────── */
+    .obs-scroll {
+      display: flex; gap: var(--gap-md);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .obs-scroll::-webkit-scrollbar { display: none; }
+    .obs-card {
+      flex: 0 0 260px;
+      scroll-snap-align: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+      cursor: pointer;
+    }
+    .obs-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px color-mix(in oklch, var(--fg) 8%, transparent); }
+    .obs-card .obs-img {
+      height: 160px;
+      background: linear-gradient(135deg, color-mix(in oklch, var(--accent-green) 30%, var(--bg)), color-mix(in oklch, var(--accent) 20%, var(--bg)));
+      display: grid; place-items: center;
+      font-size: 48px;
+      position: relative;
+    }
+    .obs-card .obs-img .obs-tag {
+      position: absolute; top: 10px; left: 10px;
+      background: color-mix(in oklch, var(--surface) 90%, transparent);
+      backdrop-filter: blur(6px);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: var(--fs-xs);
+      color: var(--fg);
+      font-weight: 500;
+    }
+    .obs-card .obs-body { padding: 14px 16px; }
+    .obs-card .obs-species { font-weight: 600; font-size: 15px; }
+    .obs-card .obs-meta { font-size: var(--fs-xs); color: var(--muted); margin-top: 4px; display: flex; gap: 8px; }
+
+    /* ─── section headers ───────────────────────────────────────────── */
+    .sec-head { margin-bottom: var(--gap-xl); }
+    .sec-head .eyebrow { margin-bottom: var(--gap-xs); }
+    .sec-head h2 { margin-bottom: var(--gap-sm); }
+    .sec-head .lead { max-width: 48ch; }
+
+    /* ─── map area ──────────────────────────────────────────────────── */
+    .map-frame {
+      position: relative;
+      background:
+        linear-gradient(135deg, color-mix(in oklch, var(--accent-blue) 20%, var(--bg)) 0%, color-mix(in oklch, var(--accent-green) 25%, var(--bg)) 50%, color-mix(in oklch, var(--accent) 15%, var(--bg)) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+    }
+    .map-frame .map-label {
+      position: absolute;
+      font-size: var(--fs-sm);
+      font-weight: 600;
+      color: var(--fg);
+      background: var(--surface);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 1px 4px color-mix(in oklch, var(--fg) 10%, transparent);
+      white-space: nowrap;
+      transition: opacity var(--base) var(--ease), transform var(--base) var(--ease);
+    }
+    .map-label.salt-lake    { top: 18%; left: 38%; }
+    .map-label.mountain     { top: 12%; right: 14%; }
+    .map-label.wetland      { bottom: 28%; left: 52%; }
+    .map-label.town         { bottom: 18%; left: 28%; }
+    .map-hotspot {
+      position: absolute;
+      width: 12px; height: 12px;
+      background: var(--accent-red);
+      border-radius: 50%;
+      box-shadow: 0 0 0 6px color-mix(in oklch, var(--accent-red) 30%, transparent);
+      animation: hotspot-pulse 2s ease-in-out infinite;
+    }
+    @keyframes hotspot-pulse {
+      0%, 100% { box-shadow: 0 0 0 6px color-mix(in oklch, var(--accent-red) 30%, transparent); }
+      50%      { box-shadow: 0 0 0 14px color-mix(in oklch, var(--accent-red) 10%, transparent); }
+    }
+    .map-hotspot.h1 { top: 16%; left: 40%; }
+    .map-hotspot.h2 { top: 10%; right: 16%; }
+    .map-hotspot.h3 { bottom: 30%; left: 54%; }
+    .map-hotspot.h4 { bottom: 20%; left: 26%; animation-delay: 0.6s; }
+    .map-hotspot.h5 { bottom: 14%; left: 48%; animation-delay: 1.2s; }
+
+    /* timeline */
+    .timeline-bar {
+      display: flex; align-items: center; gap: var(--gap-md);
+      padding: 14px 0;
+    }
+    .timeline-slider {
+      flex: 1;
+      -webkit-appearance: none; appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent), var(--accent-red));
+      outline: none;
+    }
+    .timeline-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      box-shadow: 0 2px 8px color-mix(in oklch, var(--fg) 14%, transparent);
+      cursor: pointer;
+    }
+    .timeline-label { font-size: var(--fs-sm); color: var(--muted); white-space: nowrap; min-width: 80px; text-align: center; }
+
+    /* blank-area callout */
+    .blank-callout {
+      display: flex; align-items: center; gap: var(--gap-md);
+      background: var(--green-soft);
+      border: 1px dashed var(--accent-green);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-top: var(--gap-md);
+    }
+    .blank-callout .blank-icon { font-size: 24px; }
+    .blank-callout .blank-text { font-size: var(--fs-sm); color: var(--accent-green); font-weight: 500; flex: 1; }
+
+    /* ─── task cards ────────────────────────────────────────────────── */
+    .task-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--gap-md);
+    }
+    .task-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      transition: transform var(--fast) var(--ease), border-color var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+    .task-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 4px 20px color-mix(in oklch, var(--fg) 6%, transparent); }
+    .task-card.locked {
+      opacity: 0.55;
+      filter: grayscale(0.6);
+    }
+    .task-card.unlocked {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 1px var(--accent-gold), 0 2px 16px color-mix(in oklch, var(--accent-gold) 20%, transparent);
+    }
+    .task-card .task-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: var(--fs-xs);
+      font-weight: 600;
+      margin-bottom: var(--gap-sm);
+    }
+    .task-badge.ongoing { background: var(--red-soft); color: var(--accent-red); }
+    .task-badge.upcoming { background: var(--green-soft); color: var(--accent-green); }
+    .task-badge.completed { background: var(--accent-soft); color: var(--accent); }
+    .task-card h3 { margin-bottom: 6px; }
+    .task-card .task-desc { font-size: var(--fs-sm); color: var(--muted); line-height: 1.5; }
+    .task-card .task-meta { font-size: var(--fs-xs); color: var(--muted); margin-top: var(--gap-sm); display: flex; align-items: center; gap: 8px; }
+
+    /* progress bar */
+    .progress-bar-wrap {
+      background: var(--border);
+      border-radius: 999px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: var(--gap-lg);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent-gold);
+      transition: width 0.8s var(--ease);
+    }
+    .progress-label {
+      display: flex; justify-content: space-between;
+      font-size: var(--fs-sm); color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    /* ─── species cards ─────────────────────────────────────────────── */
+    .species-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--gap-md);
+    }
+    .species-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: transform var(--fast) var(--ease);
+      cursor: pointer;
+    }
+    .species-card:hover { transform: translateY(-2px); }
+    .species-card .sp-img {
+      height: 140px;
+      display: grid; place-items: center;
+      font-size: 56px;
+    }
+    .sp-img.sp1 { background: linear-gradient(135deg, var(--tint-warm-sand), var(--tint-warm-earth)); }
+    .sp-img.sp2 { background: linear-gradient(135deg, var(--tint-green-pale), var(--tint-green-moss)); }
+    .sp-img.sp3 { background: linear-gradient(135deg, var(--tint-blue-pale), var(--tint-blue-gray)); }
+    .sp-img.sp4 { background: linear-gradient(135deg, var(--tint-rose-pale), var(--tint-rose-dust)); }
+    .species-card .sp-body { padding: 16px; }
+    .species-card .sp-name { font-weight: 600; font-family: var(--font-display); font-size: 17px; }
+    .species-card .sp-local { font-size: var(--fs-xs); color: var(--muted); margin-top: 2px; font-style: italic; }
+    .species-card .sp-desc { font-size: var(--fs-sm); color: var(--muted); margin-top: 6px; line-height: 1.5; }
+
+    /* community Q&A */
+    .qa-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-top: var(--gap-md);
+    }
+    .qa-card .qa-question { font-weight: 600; font-size: 15px; }
+    .qa-card .qa-meta { font-size: var(--fs-xs); color: var(--muted); margin-top: 6px; display: flex; gap: 12px; align-items: center; }
+    .qa-card .qa-vote {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: var(--fs-xs);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color var(--fast), color var(--fast);
+    }
+    .qa-card .qa-vote:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ─── sound player ──────────────────────────────────────────────── */
+    .sound-player {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+    }
+    .sound-player .sp-art {
+      width: 100%;
+      height: 120px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, color-mix(in oklch, var(--accent-blue) 30%, var(--bg)), color-mix(in oklch, var(--accent-green) 20%, var(--bg)));
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: var(--gap-md);
+    }
+    .sound-player .sp-art .waveform {
+      display: flex; align-items: flex-end; gap: 3px; height: 60px;
+    }
+    .waveform .bar {
+      width: 4px;
+      background: var(--accent-blue);
+      border-radius: 2px;
+      transition: height 0.3s var(--ease);
+      opacity: 0.7;
+    }
+    .waveform.playing .bar {
+      animation: wave 0.8s ease-in-out infinite;
+    }
+    .waveform.playing .bar:nth-child(odd) { animation-duration: 0.6s; }
+    .waveform.playing .bar:nth-child(3n) { animation-duration: 0.9s; }
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.3); }
+      50%      { transform: scaleY(1); }
+    }
+    .sp-controls {
+      display: flex; align-items: center; gap: var(--gap-md);
+    }
+    .sp-play-btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--accent-on);
+      display: grid; place-items: center;
+      font-size: 20px;
+      transition: transform var(--fast), background var(--fast);
+      flex-shrink: 0;
+    }
+    .sp-play-btn:hover { background: color-mix(in oklch, var(--accent) 90%, black); }
+    .sp-play-btn:active { transform: scale(0.94); }
+    .sp-info { flex: 1; }
+    .sp-info .sp-title { font-weight: 600; font-size: 15px; }
+    .sp-info .sp-sub { font-size: var(--fs-xs); color: var(--muted); margin-top: 2px; }
+    .sp-record-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 18px;
+      border: 1px dashed var(--accent-red);
+      border-radius: var(--radius);
+      color: var(--accent-red);
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      transition: background var(--fast), border-color var(--fast);
+    }
+    .sp-record-btn:hover { background: var(--red-soft); border-color: var(--accent-red); }
+
+    /* ─── data wall ─────────────────────────────────────────────────── */
+    .leaderboard { margin-top: var(--gap-md); }
+    .lb-row {
+      display: flex; align-items: center; gap: var(--gap-md);
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .lb-row:last-child { border-bottom: 0; }
+    .lb-rank {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .lb-rank.gold   { background: var(--accent-gold); color: var(--accent-on); }
+    .lb-rank.silver { background: var(--rank-silver); color: var(--accent-on); }
+    .lb-rank.bronze { background: var(--rank-bronze); color: var(--accent-on); }
+    .lb-rank.normal { background: var(--fg-soft); color: var(--muted); }
+    .lb-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .lb-avatar.av1 { background: linear-gradient(135deg, var(--accent), var(--accent-red)); }
+    .lb-avatar.av2 { background: linear-gradient(135deg, var(--accent-green), var(--accent-blue)); }
+    .lb-avatar.av3 { background: linear-gradient(135deg, var(--accent-blue), var(--accent)); }
+    .lb-avatar.av4 { background: linear-gradient(135deg, var(--accent-red), var(--accent-gold)); }
+    .lb-avatar.av5 { background: linear-gradient(135deg, var(--accent), var(--accent-green)); }
+    .lb-info { flex: 1; }
+    .lb-info .lb-name { font-weight: 600; font-size: 14px; }
+    .lb-info .lb-stat { font-size: var(--fs-xs); color: var(--muted); }
+    .lb-count { font-family: var(--font-mono); font-weight: 600; font-size: 15px; color: var(--fg); }
+
+    /* blank zone CTA */
+    .blank-zone-cta {
+      background: linear-gradient(135deg, color-mix(in oklch, var(--accent-blue) 10%, var(--surface)), var(--surface));
+      border: 2px dashed var(--accent-blue);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      text-align: center;
+      margin-top: var(--gap-lg);
+    }
+    .blank-zone-cta h3 { color: var(--accent-blue); font-family: var(--font-display); }
+    .blank-zone-cta p { color: var(--muted); font-size: var(--fs-sm); margin: 8px 0 16px; }
+
+    /* ─── personal center ───────────────────────────────────────────── */
+    .personal-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--gap-md);
+    }
+    .personal-stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: center;
+    }
+    .personal-stat .ps-num {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--fg);
+      line-height: 1.1;
+    }
+    .personal-stat .ps-label { font-size: var(--fs-sm); color: var(--muted); margin-top: 6px; }
+    .personal-stat .ps-sub { font-size: var(--fs-xs); color: var(--accent-green); margin-top: 2px; font-weight: 500; }
+
+    /* ─── page footer ───────────────────────────────────────────────── */
+    .pagefoot {
+      padding-block: var(--gap-xl);
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding-bottom: 100px; /* space for bottom nav on mobile */
+    }
+
+    /* ─── section spacing helpers ───────────────────────────────────── */
+    .stack-xl { display: flex; flex-direction: column; gap: var(--gap-xl); }
+    .gap-lg { gap: var(--gap-lg); }
+    .mt-md { margin-top: var(--gap-md); }
+    .mt-lg { margin-top: var(--gap-lg); }
+    .mb-md { margin-bottom: var(--gap-md); }
+
+    /* ─── responsive ────────────────────────────────────────────────── */
+    @media (min-width: 768px) {
+      .bottomnav { display: none; }
+      .pagefoot { padding-bottom: var(--gap-xl); }
+      .obs-card { flex: 0 0 300px; }
+      .obs-card .obs-img { height: 200px; }
+      .task-grid { grid-template-columns: repeat(3, 1fr); }
+      .species-grid { grid-template-columns: repeat(4, 1fr); }
+      .dash-card { min-width: 160px; }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-split {
+        display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-2xl); align-items: center;
+      }
+      .sound-split {
+        display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap-xl); align-items: center;
+      }
+      .hero { padding-block-start: clamp(120px, 16vw, 180px); }
+    }
+
+    @media (max-width: 767px) {
+      .topnav-inner { padding-block: 10px; }
+      .topnav .logo { font-size: 17px; }
+      .topnav .logo-icon { width: 28px; height: 28px; font-size: 14px; }
+      .dash-row { gap: var(--gap-sm); }
+      .dash-card { padding: 12px 14px; min-width: 100px; flex: 1 1 calc(50% - var(--gap-sm)); }
+      .dash-card .dash-num { font-size: 22px; }
+      .obs-card { flex: 0 0 240px; }
+      .obs-card .obs-img { height: 140px; }
+      .hero h1 { font-size: clamp(28px, 8vw, 40px); }
+      .map-frame { aspect-ratio: 4 / 3; }
+      .personal-preview { grid-template-columns: repeat(2, 1fr); }
+      .task-grid { grid-template-columns: 1fr; }
+      .species-grid { grid-template-columns: repeat(2, 1fr); }
+      body { padding-bottom: 70px; }
+    }
+
+    @media (max-width: 400px) {
+      .container { padding-inline: 14px; }
+      .species-grid { gap: var(--gap-sm); }
+      .species-card .sp-img { height: 100px; font-size: 36px; }
+      .task-card { padding: 16px; }
+      .dash-card { padding: 10px 12px; min-width: 80px; flex: 1 1 calc(50% - 4px); }
+      .dash-card .dash-num { font-size: 20px; }
+      .dash-card .dash-label { font-size: 11px; }
+      .obs-card { flex: 0 0 220px; }
+    }
+  </style>
+  <style>
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════ 顶部导航 ════════════ -->
+  <header class="topnav" id="topnav" data-od-id="topnav">
+    <div class="container topnav-inner">
+      <span class="logo">
+        <span class="logo-icon">🦩</span>
+        盐湖记
+      </span>
+      <div class="topnav-actions">
+        <button class="btn-icon" aria-label="搜索">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </button>
+        <button class="avatar" aria-label="个人中心">柳</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="content">
+
+    <!-- ════════════ 1. Hero 区域 ════════════ -->
+    <section class="hero" data-od-id="hero">
+      <div class="hero-bg"></div>
+      <div class="container hero-content">
+        <div class="hero-split">
+          <div>
+            <p class="eyebrow" style="margin-bottom: 12px;">运城盐湖 · 公众生态观测平台</p>
+            <h1>看见盐湖的每一种生命</h1>
+            <p class="lead" style="margin-top: 16px;">记录你身边的动植物，和中条山下的邻居一起，拼出一张活的生态地图。</p>
+
+            <!-- 数据仪表盘 -->
+            <div class="dash-row" id="heroStats" style="margin-top: 24px;">
+              <div class="dash-card">
+                <div class="dash-num num">127</div>
+                <div class="dash-label">本月已记录物种</div>
+                <div class="dash-sub">↑ 12 较上月</div>
+              </div>
+              <div class="dash-card">
+                <div class="dash-num num">3</div>
+                <div class="dash-label">中条山新发现鸟类</div>
+                <div class="dash-sub">黑鹳 · 白尾海雕 · 短耳鸮</div>
+              </div>
+              <div class="dash-card">
+                <div class="dash-num num">2,841</div>
+                <div class="dash-label">社区累计观测记录</div>
+                <div class="dash-sub">来自 1,206 位观测者</div>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div style="display: flex; gap: var(--gap-sm); flex-wrap: wrap; margin-top: 8px;">
+              <button class="btn btn-primary btn-pulse" id="recordBtn" aria-label="立即记录">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                立即记录
+              </button>
+              <button class="btn btn-secondary">语音速记</button>
+              <button class="btn btn-ghost" style="font-size:13px;">支持离线记录</button>
+            </div>
+          </div>
+
+          <!-- 右侧：最新观测卡片流 -->
+          <div style="margin-top: var(--gap-xl);">
+            <p class="eyebrow" style="margin-bottom: var(--gap-md);">最新观测</p>
+            <div class="obs-scroll" id="obsScroll">
+              <div class="obs-card">
+                <div class="obs-img" style="background:linear-gradient(135deg,var(--tint-amber),var(--tint-amber-deep));">🦩</div>
+                <div class="obs-body">
+                  <div class="obs-species">大红鹳（火烈鸟）</div>
+                  <div class="obs-meta"><span>📍 盐湖核心区</span><span>🕐 2 小时前</span></div>
+                </div>
+              </div>
+              <div class="obs-card">
+                <div class="obs-img" style="background:linear-gradient(135deg,var(--tint-mint),var(--tint-mint-deep));">🌿</div>
+                <div class="obs-body">
+                  <div class="obs-species">盐地碱蓬</div>
+                  <div class="obs-meta"><span>📍 盐生草甸</span><span>🕐 5 小时前</span></div>
+                </div>
+              </div>
+              <div class="obs-card">
+                <div class="obs-img" style="background:linear-gradient(135deg,var(--tint-lavender),var(--tint-lavender-deep));">🦋</div>
+                <div class="obs-body">
+                  <div class="obs-species">金凤蝶</div>
+                  <div class="obs-meta"><span>📍 中条山麓</span><span>🕐 昨天</span></div>
+                </div>
+              </div>
+              <div class="obs-card">
+                <div class="obs-img" style="background:linear-gradient(135deg,var(--tint-taupe),var(--tint-taupe-deep));">🐟</div>
+                <div class="obs-body">
+                  <div class="obs-species">卤虫（盐虫子）</div>
+                  <div class="obs-meta"><span>📍 盐湖中心</span><span>🕐 昨天</span></div>
+                </div>
+              </div>
+              <div class="obs-card">
+                <div class="obs-img" style="background:linear-gradient(135deg,var(--tint-sky),var(--tint-sky-deep));">🦅</div>
+                <div class="obs-body">
+                  <div class="obs-species">黑鹳</div>
+                  <div class="obs-meta"><span>📍 芦苇湿地</span><span>🕐 3 天前</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ 2. 探索地图 ════════════ -->
+    <section class="section" data-od-id="map">
+      <div class="container">
+        <div class="sec-head">
+          <p class="eyebrow">探索地图</p>
+          <h2>追踪生命的足迹</h2>
+          <p class="lead" style="margin-top: 8px;">从盐湖中心到中条山巅，拖动时间轴看物种随季节迁徙的轨迹。</p>
+        </div>
+
+        <div class="map-frame" id="mapFrame">
+          <!-- 地图标签 -->
+          <span class="map-label salt-lake">🧂 盐湖核心区</span>
+          <span class="map-label mountain">⛰ 中条山</span>
+          <span class="map-label wetland">🌾 芦苇湿地</span>
+          <span class="map-label town">🏘 盐池街道</span>
+          <!-- 热点 -->
+          <div id="mapHotspots"></div>
+        </div>
+
+        <!-- 时间轴 -->
+        <div class="timeline-bar">
+          <span class="timeline-label">🌱 春分</span>
+          <input type="range" class="timeline-slider" id="timelineSlider" min="1" max="5" value="4" aria-label="季节时间轴">
+          <span class="timeline-label" id="timelineLabel">🍂 霜降</span>
+        </div>
+
+        <!-- 空白区域召唤 -->
+        <div class="blank-callout">
+          <span class="blank-icon">🗺</span>
+          <span class="blank-text">中条山西坡尚无观测记录——你会是第一位记录者吗？</span>
+          <button class="btn btn-ghost" style="color:var(--accent-green);font-weight:600;font-size:13px;">去看看 →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ 3. 任务与挑战 ════════════ -->
+    <section class="section" data-od-id="tasks">
+      <div class="container">
+        <div class="sec-head">
+          <p class="eyebrow">任务与挑战</p>
+          <h2>跟着节气去观测</h2>
+          <p class="lead" style="margin-top: 8px;">每个节气都有属于盐湖的生态故事。完成打卡，解锁「生态行者」徽章。</p>
+        </div>
+
+        <div class="task-grid">
+          <div id="taskList"></div>
+        </div>
+
+        <!-- 生态行者进度 -->
+        <div style="margin-top: var(--gap-xl);">
+          <div class="row-between" style="margin-bottom: 6px; align-items: baseline;">
+            <span style="font-weight:600;">🌿 生态行者</span>
+            <span class="meta">7 / 12 节气任务已完成</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" style="width:58%;"></div>
+          </div>
+          <div style="display:flex; justify-content: space-between; margin-top: 10px;">
+            <span class="meta" style="font-size:11px;">🏅 入门行者</span>
+            <span class="meta" style="font-size:11px;">🏅 资深行者 · 6/12</span>
+            <span class="meta" style="font-size:11px;">🏆 生态行者 · 12/12</span>
+          </div>
+        </div>
+
+        <!-- 协作项目 -->
+        <div class="qa-card" style="margin-top: var(--gap-lg);">
+          <div class="row-between" style="align-items: flex-start;">
+            <div>
+              <span class="eyebrow" style="font-size:10px;">协作项目</span>
+              <h3 style="margin-top: 4px; font-family: var(--font-display);">2026 运城火烈鸟越冬监测</h3>
+              <p class="meta" style="margin-top: 4px;">社区协作 · 已记录 47 只个体 · 11 月 – 次年 3 月</p>
+            </div>
+            <button class="btn btn-primary" style="font-size:13px; padding: 8px 16px;">加入项目</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ 4. 物种故事 ════════════ -->
+    <section class="section" data-od-id="species">
+      <div class="container">
+        <div class="sec-head">
+          <p class="eyebrow">知识共创</p>
+          <h2>盐湖的物种故事</h2>
+          <p class="lead" style="margin-top: 8px;">每一种生命都有它的盐湖记忆——老盐工的口述、民间叫法、科学记录共同编织。</p>
+        </div>
+
+        <div class="species-grid">
+          <div style="margin-bottom:16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <input id="speciesSearch" class="field-input" type="search" placeholder="🔍 搜索物种..." style="flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--border);border-radius:99px;font-size:14px;">
+          </div>
+          <div id="speciesCats" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;"></div>
+          <div id="speciesList" class="species-grid"></div>
+        </div>
+
+        <!-- 社区疑问投票 -->
+        <div class="qa-card" style="margin-top: var(--gap-lg);">
+          <div class="qa-question">🤔 这片突然变红的盐池是盐藻爆发吗？</div>
+          <p class="meta" style="margin-top: 4px;">提问者：盐池老张 · 昨天 · 位于盐湖 3 号池</p>
+          <div style="display: flex; gap: var(--gap-sm); margin-top: 12px; flex-wrap: wrap;">
+            <button class="qa-vote">👍 是盐藻（23 票）</button>
+            <button class="qa-vote">🧪 是卤虫（15 票）</button>
+            <button class="qa-vote">🔬 其他原因（8 票）</button>
+            <button class="btn btn-ghost" style="font-size:13px;">我也想知道 →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ 5. 声音地图 ════════════ -->
+    <section class="section" data-od-id="sound">
+      <div class="container">
+        <div class="sec-head">
+          <p class="eyebrow">声音地图</p>
+          <h2>聆听盐湖的呼吸</h2>
+          <p class="lead" style="margin-top: 8px;">录制你听到的环境音——卤虫池的波浪、中条山的鸟鸣、蝉噪与风声——共建「盐池声景」。</p>
+        </div>
+
+        <div class="sound-split">
+          <div class="sound-player" id="soundPlayer">
+            <div class="sp-art">
+              <div class="waveform" id="waveform">
+                <span class="bar" style="height:18px;"></span>
+                <span class="bar" style="height:36px;"></span>
+                <span class="bar" style="height:24px;"></span>
+                <span class="bar" style="height:48px;"></span>
+                <span class="bar" style="height:30px;"></span>
+                <span class="bar" style="height:42px;"></span>
+                <span class="bar" style="height:22px;"></span>
+                <span class="bar" style="height:38px;"></span>
+                <span class="bar" style="height:28px;"></span>
+                <span class="bar" style="height:44px;"></span>
+                <span class="bar" style="height:32px;"></span>
+                <span class="bar" style="height:40px;"></span>
+                <span class="bar" style="height:20px;"></span>
+                <span class="bar" style="height:35px;"></span>
+                <span class="bar" style="height:26px;"></span>
+                <span class="bar" style="height:46px;"></span>
+                <span class="bar" style="height:34px;"></span>
+                <span class="bar" style="height:28px;"></span>
+                <span class="bar" style="height:42px;"></span>
+                <span class="bar" style="height:24px;"></span>
+                <span class="bar" style="height:38px;"></span>
+                <span class="bar" style="height:30px;"></span>
+                <span class="bar" style="height:44px;"></span>
+                <span class="bar" style="height:22px;"></span>
+              </div>
+            </div>
+            <div class="sp-controls">
+              <button class="sp-play-btn" id="playBtn" aria-label="播放">▶</button>
+              <div class="sp-info">
+                <div class="sp-title">盐池声景 · 冬日火烈鸟</div>
+                <div class="sp-sub">录制者：柳先生 · 12 月 · 盐湖核心区</div>
+              </div>
+            </div>
+            <div style="margin-top: var(--gap-md);">
+              <button class="sp-record-btn" id="recordSoundBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>
+                录制我的声音
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--gap-lg);">
+            <p class="eyebrow" style="margin-bottom: var(--gap-md);">🌿 更多声景片段</p>
+          <div id="soundList" style="margin-top: var(--gap-lg);"></div>
+                </div>
+                <button class="btn btn-ghost" style="padding:8px;">▶</button>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border);">
+                <span style="font-size:24px;">🐦</span>
+                <div style="flex:1;">
+                  <div style="font-weight:500;font-size:14px;">中条山清晨鸟鸣</div>
+                  <div class="meta">录制者：博物志 · 5 月 · 3:42</div>
+                </div>
+                <button class="btn btn-ghost" style="padding:8px;">▶</button>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; padding:12px 0;">
+                <span style="font-size:24px;">🎋</span>
+                <div style="flex:1;">
+                  <div style="font-weight:500;font-size:14px;">芦苇荡风声</div>
+                  <div class="meta">录制者：自然之声 · 10 月 · 1:58</div>
+                </div>
+                <button class="btn btn-ghost" style="padding:8px;">▶</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ 6. 社区数据墙 ════════════ -->
+    <section class="section" data-od-id="datawall">
+      <div class="container">
+        <div class="sec-head">
+          <p class="eyebrow">数据墙</p>
+          <h2>社区的力量</h2>
+          <p class="lead" style="margin-top: 8px;">每一笔记录都在让盐湖的生态图谱更加完整。</p>
+        </div>
+
+        <div class="hero-split">
+          <!-- 本周达人榜 -->
+          <div>
+            <h3 style="font-family:var(--font-display); margin-bottom: var(--gap-md);">🏅 本周观测达人</h3>
+            <div class="leaderboard">
+            <div id="leaderboard"></div>
+                <span class="lb-avatar av1"></span>
+                <div class="lb-info">
+                  <div class="lb-name">盐池老张</div>
+                  <div class="lb-stat">本周 23 条记录 · 含 2 个新物种</div>
+                </div>
+                <span class="lb-count">23</span>
+              </div>
+              <div class="lb-row">
+                <span class="lb-rank silver">2</span>
+                <span class="lb-avatar av2"></span>
+                <div class="lb-info">
+                  <div class="lb-name">博物志</div>
+                  <div class="lb-stat">本周 19 条记录 · 含 1 个新物种</div>
+                </div>
+                <span class="lb-count">19</span>
+              </div>
+              <div class="lb-row">
+                <span class="lb-rank bronze">3</span>
+                <span class="lb-avatar av3"></span>
+                <div class="lb-info">
+                  <div class="lb-name">柳先生</div>
+                  <div class="lb-stat">本周 16 条记录 · 含 1 个声音</div>
+                </div>
+                <span class="lb-count">16</span>
+              </div>
+              <div class="lb-row">
+                <span class="lb-rank normal">4</span>
+                <span class="lb-avatar av4"></span>
+                <div class="lb-info">
+                  <div class="lb-name">小芦苇</div>
+                  <div class="lb-stat">本周 12 条记录</div>
+                </div>
+                <span class="lb-count">12</span>
+              </div>
+              <div class="lb-row">
+                <span class="lb-rank normal">5</span>
+                <span class="lb-avatar av5"></span>
+                <div class="lb-info">
+                  <div class="lb-name">山行者</div>
+                  <div class="lb-stat">本周 11 条记录 · 中条山区域</div>
+                </div>
+                <span class="lb-count">11</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 空白区域召唤 -->
+          <div style="margin-top: var(--gap-xl);">
+        <div id="blankZones" class="blank-zone-cta">
+              <h3>🗺 中条山西坡</h3>
+              <p>该区域至今没有一条观测记录。<br>去走一走，成为第一个记录者？</p>
+              <button class="btn btn-primary" style="background:var(--accent-blue);">探索西坡 →</button>
+            </div>
+            <div style="margin-top: var(--gap-lg); text-align: center;">
+              <p class="meta">另有 7 个空白区域等待第一位记录者</p>
+              <div style="display:flex; gap:8px; justify-content:center; margin-top:8px; flex-wrap:wrap;">
+                <span class="tag" style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:999px;">盐湖东南角</span>
+                <span class="tag" style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:999px;">农田边缘带</span>
+                <span class="tag" style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:999px;">中条山北麓</span>
+                <span class="tag" style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:999px;">人工水域</span>
+                <span class="tag" style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:999px;">盐化工厂旧址</span>
+                <span class="tag" style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:999px;">硝池滩</span>
+                <span class="tag" style="font-size:11px; padding:4px 10px; border:1px solid var(--border); border-radius:999px;">鸭子池</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ 7. 个人中心入口 ════════════ -->
+    <section class="section" data-od-id="personal">
+      <div class="container">
+        <div class="sec-head">
+          <p class="eyebrow">我的自然档案</p>
+          <h2>你的盐湖足迹</h2>
+        </div>
+
+          <div id="personalCenter"></div>
+            <div class="ps-num num">47</div>
+            <div class="ps-label">已记录物种数</div>
+          </div>
+          <div class="personal-stat">
+            <div class="ps-num">盐生草甸</div>
+            <div class="ps-label">最常去生境</div>
+            <div class="ps-sub">32 次观测记录</div>
+          </div>
+          <div class="personal-stat">
+            <div class="ps-num num">3</div>
+            <div class="ps-label">记录被引用次数</div>
+            <div class="ps-sub">🔥 你的记录已被社区引用 3 次</div>
+          </div>
+          <div class="personal-stat">
+            <div class="ps-num" style="font-size:28px;">🌿 7/12</div>
+            <div class="ps-label">节气任务进度</div>
+            <div class="ps-sub">生态行者 · 资深阶段</div>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top: var(--gap-lg);">
+          <button class="btn btn-secondary" style="font-size:14px;">查看完整档案 →</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pagefoot" data-od-id="footer">
+    <div class="container">
+      <p>🌿 盐湖记 · 运城盐湖公众生态观测平台</p>
+      <p class="meta" style="margin-top: 4px;">社区共建 · 科学公益 · 归属感 · 自然连接</p>
+    </div>
+  </footer>
+
+  <!-- ════════════ 底部导航（移动端） ════════════ -->
+  <nav class="bottomnav" id="bottomnav" data-od-id="bottomnav">
+    <button class="bottomnav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      首页
+    </button>
+    <button class="bottomnav-item record-btn" id="bottomRecordBtn">
+      <span class="record-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </span>
+      记录
+    </button>
+    <button class="bottomnav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="10" r="3"/><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg>
+      地图
+    </button>
+    <button class="bottomnav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      社区
+    </button>
+    <button class="bottomnav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      我的
+    </button>
+  </nav>
+
+  <script src="db.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' });
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
+
