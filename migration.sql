@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS species (
   season      TEXT NOT NULL DEFAULT '', -- 全年 / 春夏 / 夏秋 / 秋冬 / 春秋 / 冬季
   rarity      TEXT NOT NULL DEFAULT 'common',  -- common / uncommon / rare
   emoji       TEXT NOT NULL DEFAULT '🌿',
-  similar     TEXT[] NOT NULL DEFAULT '{}',     -- 相似物种名称列表
+  similar_species TEXT[] NOT NULL DEFAULT '{}',     -- 相似物种名称列表
   tags        TEXT[] NOT NULL DEFAULT '{}',
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -198,7 +198,7 @@ CREATE POLICY votes_insert ON community_votes
 -- ════════════════════════════════════════════════════════════════════
 
 -- ── 11 种盐湖特色物种 ──────────────────────────────────────────────
-INSERT INTO species (id, name, category, habitat, description, season, rarity, emoji, similar, tags)
+INSERT INTO species (id, name, category, habitat, description, season, rarity, emoji, similar_species, tags)
 VALUES
   ('sp_1', '大红鹳（火烈鸟）', '鸟类',
    '{"盐湖核心区","人工水域"}',

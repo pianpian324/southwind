@@ -456,7 +456,7 @@ function renderSpeciesCards(query = '', category = null) {
       </div>
       <div class="species-desc" style="font-size:13px;color:var(--muted);padding:8px;line-height:1.5;">${desc}</div>
       <div style="display:flex;flex-wrap:wrap;gap:4px;padding:4px 8px 8px;">
-        ${(s.similar||[]).map(sim => `<span class="tag" style="font-size:10px;padding:2px 6px;border-radius:99px;background:var(--blue-soft);cursor:pointer;" onclick="event.stopPropagation();compareSpecies('${s.name}','${sim}')">🔍 对比 ${sim}</span>`).join('')}
+        ${(s.similar_species||[]).map(sim => `<span class="tag" style="font-size:10px;padding:2px 6px;border-radius:99px;background:var(--blue-soft);cursor:pointer;" onclick="event.stopPropagation();compareSpecies('${s.name}','${sim}')">🔍 对比 ${sim}</span>`).join('')}
         ${(s.tags||[]).map(t => `<span class="tag" style="font-size:10px;padding:2px 6px;border-radius:99px;background:var(--accent-soft);">${t}</span>`).join('')}
       </div>
     </div>`;
@@ -483,7 +483,7 @@ window.showSpeciesDetail = function (id) {
         <p><strong>生境</strong> ${hab.join(' · ')}</p>
         <p><strong>活跃季</strong> ${s.season}</p>
         <p style="margin-top:8px;line-height:1.6;">${desc}</p>
-        ${(s.similar||[]).length > 0 ? `<div style="margin-top:12px;"><strong>相似物种</strong><div style="display:flex;gap:8px;margin-top:4px;">${s.similar.map(sim => `<button class="btn btn-secondary" style="font-size:12px;padding:4px 12px;" onclick="compareSpecies('${s.name}','${sim}')">🔍 对比 ${sim}</button>`).join('')}</div></div>` : ''}
+        ${(s.similar_species||[]).length > 0 ? `<div style="margin-top:12px;"><strong>相似物种</strong><div style="display:flex;gap:8px;margin-top:4px;">${s.similar_species.map(sim => `<button class="btn btn-secondary" style="font-size:12px;padding:4px 12px;" onclick="compareSpecies('${s.name}','${sim}')">🔍 对比 ${sim}</button>`).join('')}</div></div>` : ''}
         <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:4px;">${(s.tags||[]).map(t => `<span class="tag" style="font-size:11px;padding:3px 8px;border-radius:99px;background:var(--accent-soft);">${t}</span>`).join('')}</div>
         ${obsList.length > 0 ? `<div style="margin-top:16px;"><strong>社区观测记录 (${obsList.length})</strong><div style="max-height:160px;overflow-y:auto;margin-top:8px;">${obsList.slice(0, 10).map(o => {
           const t = o.created_at || o.timestamp;

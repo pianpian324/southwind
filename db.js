@@ -204,17 +204,17 @@ async function getSpecies() {
 
   // Bootstrap from default data
   const defaults = [
-    { id:'sp_1', name:'大红鹳（火烈鸟）', category:'鸟类', habitat:['盐湖核心区','人工水域'], description:'每年10月下旬抵达运城盐湖，停留至次年4月。以卤虫为食，体羽呈朱红色。', season:'秋冬', rarity:'common', emoji:'🦩', similar:['白琵鹭'], tags:['候鸟','旗舰种'] },
-    { id:'sp_2', name:'盐地碱蓬', category:'维管束植物', habitat:['盐生草甸','盐湖核心区'], description:'一年生草本，耐盐碱。秋季叶片变红，形成"红海滩"景观。', season:'夏秋', rarity:'common', emoji:'🌿', similar:['盐角草'], tags:['指示物种','耐盐'] },
-    { id:'sp_3', name:'卤虫（丰年虾）', category:'浮游动物', habitat:['盐湖核心区'], description:'盐湖关键物种，高盐度水体中大量繁殖。是火烈鸟的主要食物来源。', season:'春夏', rarity:'common', emoji:'🦐', similar:[], tags:['关键种','饵料生物'] },
-    { id:'sp_4', name:'黑鹳', category:'鸟类', habitat:['中条山麓','人工水域'], description:'国家一级保护动物。在运城盐湖周边有稳定越冬种群。', season:'秋冬', rarity:'rare', emoji:'🦅', similar:['白鹳'], tags:['保护动物','候鸟'] },
-    { id:'sp_5', name:'盐角草', category:'维管束植物', habitat:['盐生草甸','盐湖核心区'], description:'肉质茎叶，高度耐盐。与盐地碱蓬相似但茎节明显。', season:'夏秋', rarity:'common', emoji:'🌱', similar:['盐地碱蓬'], tags:['耐盐','肉质植物'] },
-    { id:'sp_6', name:'白琵鹭', category:'鸟类', habitat:['芦苇湿地','人工水域'], description:'大型涉禽，嘴长而扁平呈匙状。在运城盐湖湿地常见。', season:'春秋', rarity:'uncommon', emoji:'🕊', similar:['大红鹳（火烈鸟）'], tags:['涉禽','候鸟'] },
-    { id:'sp_7', name:'短耳鸮', category:'鸟类', habitat:['盐生草甸','街道绿化带'], description:'中型猫头鹰，白天活动。在盐湖周边草甸和农田边缘常见。', season:'全年', rarity:'uncommon', emoji:'🦉', similar:['长耳鸮'], tags:['猛禽'] },
-    { id:'sp_8', name:'芦苇', category:'维管束植物', habitat:['芦苇湿地','人工水域'], description:'多年生禾草，是盐湖湿地的主要建群种。', season:'全年', rarity:'common', emoji:'🎋', similar:[], tags:['建群种','湿地植物'] },
-    { id:'sp_9', name:'白尾海雕', category:'鸟类', habitat:['盐湖核心区','中条山麓'], description:'国家一级保护动物，大型猛禽。冬季在盐湖上空盘旋。', season:'冬季', rarity:'rare', emoji:'🦅', similar:['金雕'], tags:['保护动物','猛禽'] },
-    { id:'sp_10', name:'小球藻', category:'浮游植物', habitat:['盐湖核心区','人工水域'], description:'单细胞绿藻，在高盐度水体中大量繁殖。盐湖初级生产者。', season:'春夏', rarity:'common', emoji:'🟢', similar:['螺旋藻'], tags:['初级生产者','藻类'] },
-    { id:'sp_11', name:'盐藻（杜氏藻）', category:'浮游植物', habitat:['盐湖核心区'], description:'耐高盐微藻，积累β-胡萝卜素使水体变红。', season:'夏秋', rarity:'common', emoji:'🔴', similar:['小球藻'], tags:['指示物种','藻类'] }
+    { id:'sp_1', name:'大红鹳（火烈鸟）', category:'鸟类', habitat:['盐湖核心区','人工水域'], description:'每年10月下旬抵达运城盐湖，停留至次年4月。以卤虫为食，体羽呈朱红色。', season:'秋冬', rarity:'common', emoji:'🦩', similar_species:['白琵鹭'], tags:['候鸟','旗舰种'] },
+    { id:'sp_2', name:'盐地碱蓬', category:'维管束植物', habitat:['盐生草甸','盐湖核心区'], description:'一年生草本，耐盐碱。秋季叶片变红，形成"红海滩"景观。', season:'夏秋', rarity:'common', emoji:'🌿', similar_species:['盐角草'], tags:['指示物种','耐盐'] },
+    { id:'sp_3', name:'卤虫（丰年虾）', category:'浮游动物', habitat:['盐湖核心区'], description:'盐湖关键物种，高盐度水体中大量繁殖。是火烈鸟的主要食物来源。', season:'春夏', rarity:'common', emoji:'🦐', similar_species:[], tags:['关键种','饵料生物'] },
+    { id:'sp_4', name:'黑鹳', category:'鸟类', habitat:['中条山麓','人工水域'], description:'国家一级保护动物。在运城盐湖周边有稳定越冬种群。', season:'秋冬', rarity:'rare', emoji:'🦅', similar_species:['白鹳'], tags:['保护动物','候鸟'] },
+    { id:'sp_5', name:'盐角草', category:'维管束植物', habitat:['盐生草甸','盐湖核心区'], description:'肉质茎叶，高度耐盐。与盐地碱蓬相似但茎节明显。', season:'夏秋', rarity:'common', emoji:'🌱', similar_species:['盐地碱蓬'], tags:['耐盐','肉质植物'] },
+    { id:'sp_6', name:'白琵鹭', category:'鸟类', habitat:['芦苇湿地','人工水域'], description:'大型涉禽，嘴长而扁平呈匙状。在运城盐湖湿地常见。', season:'春秋', rarity:'uncommon', emoji:'🕊', similar_species:['大红鹳（火烈鸟）'], tags:['涉禽','候鸟'] },
+    { id:'sp_7', name:'短耳鸮', category:'鸟类', habitat:['盐生草甸','街道绿化带'], description:'中型猫头鹰，白天活动。在盐湖周边草甸和农田边缘常见。', season:'全年', rarity:'uncommon', emoji:'🦉', similar_species:['长耳鸮'], tags:['猛禽'] },
+    { id:'sp_8', name:'芦苇', category:'维管束植物', habitat:['芦苇湿地','人工水域'], description:'多年生禾草，是盐湖湿地的主要建群种。', season:'全年', rarity:'common', emoji:'🎋', similar_species:[], tags:['建群种','湿地植物'] },
+    { id:'sp_9', name:'白尾海雕', category:'鸟类', habitat:['盐湖核心区','中条山麓'], description:'国家一级保护动物，大型猛禽。冬季在盐湖上空盘旋。', season:'冬季', rarity:'rare', emoji:'🦅', similar_species:['金雕'], tags:['保护动物','猛禽'] },
+    { id:'sp_10', name:'小球藻', category:'浮游植物', habitat:['盐湖核心区','人工水域'], description:'单细胞绿藻，在高盐度水体中大量繁殖。盐湖初级生产者。', season:'春夏', rarity:'common', emoji:'🟢', similar_species:['螺旋藻'], tags:['初级生产者','藻类'] },
+    { id:'sp_11', name:'盐藻（杜氏藻）', category:'浮游植物', habitat:['盐湖核心区'], description:'耐高盐微藻，积累β-胡萝卜素使水体变红。', season:'夏秋', rarity:'common', emoji:'🔴', similar_species:['小球藻'], tags:['指示物种','藻类'] }
   ];
   defaults.forEach(s => put('species', s).catch(() => {}));
   return defaults;
