@@ -1,5 +1,5 @@
-const CACHE = 'southwind-v1';
-const URLS = ['/', '/index.html', '/style.css', '/db.js', '/app.js'];
+const CACHE = 'southwind-v2';
+const URLS = ['/', '/index.html', '/style.css', '/db.js', '/sync.js', '/app.js', '/manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(URLS)));

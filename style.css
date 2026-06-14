@@ -2,6 +2,24 @@
 
 .field-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 
+/* ─── 同步状态指示器 ──────────────────────────────────────────── */
+#syncIndicator { cursor: default; font-size: 10px; margin-right: 4px; }
+#syncIndicator span { transition: color 0.3s; }
+
+/* ─── 照片卡片 ──────────────────────────────────────────────── */
+.obs-img img { width: 100%; height: 100%; object-fit: cover; }
+.obs-card .obs-img { position: relative; overflow: hidden; }
+.obs-card .obs-img .obs-tag {
+  position: absolute; top: 10px; left: 10px;
+  background: color-mix(in oklch, var(--surface) 90%, transparent);
+  backdrop-filter: blur(6px);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  color: var(--fg);
+  font-weight: 500;
+}
+
 .map-hotspot {
   position: absolute; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;

@@ -765,6 +765,7 @@
         盐湖记
       </span>
       <div class="topnav-actions">
+        <span id="syncIndicator" style="font-size:10px;margin-right:4px;" title="连接中…">◌</span>
         <button class="btn-icon" aria-label="搜索">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
         </button>
@@ -1175,8 +1176,8 @@
 
   <footer class="pagefoot" data-od-id="footer">
     <div class="container">
-      <p>🌿 盐湖记 · 运城盐湖公众生态观测平台</p>
-      <p class="meta" style="margin-top: 4px;">社区共建 · 科学公益 · 归属感 · 自然连接</p>
+      <p>🌿 盐湖记 · 运城盐湖公众生态观测社区</p>
+      <p class="meta" style="margin-top: 4px;">分布式观测 · 社区共建 · 科学公益 · 自然连接</p>
     </div>
   </footer>
 
@@ -1206,10 +1207,35 @@
     </button>
   </nav>
 
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    /**
+     * ⚠️ 在此处填入你的 Supabase 项目凭证
+     * URL: https://supabase.com/dashboard → 项目 Settings → API → Project URL
+     * Key: https://supabase.com/dashboard → 项目 Settings → API → anon public
+     *
+     * 此密钥为公开密钥（anon），设计为可安全地在客户端使用。
+     * 真正的写入权限由 Supabase Row Level Security（RLS）策略控制。
+     *
+     * 如果留空，应用将以纯离线本地模式运行（不影响功能，仅无法跨设备同步）。
+     */
+    window.__SUPABASE_URL__    = 'YOUR_SUPABASE_PROJECT_URL';
+    window.__SUPABASE_ANON_KEY__ = 'YOUR_SUPABASE_ANON_KEY';
+
+    // 如果页面注入了环境变量（Cloudflare Pages / Vercel），优先使用
+    if (window.SUPABASE_URL)    window.__SUPABASE_URL__    = window.SUPABASE_URL;
+    if (window.SUPABASE_ANON_KEY) window.__SUPABASE_ANON_KEY__ = window.SUPABASE_ANON_KEY;
+  </script>
   <script src="db.js"></script>
+  <script src="sync.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      // 仅在本地文件协议或已知 http/https 环境尝试注册
+      // 使用 .catch 忽略注册失败（如本地 HTTP server MIME type 问题）
+      try {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
+      } catch (e) { /* 忽略 */ }
     }
   </script>
   <script src="app.js"></script>
