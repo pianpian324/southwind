@@ -3,3 +3,9 @@ node_modules/
 *.log
 Thumbs.db
 .DS_Store
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
